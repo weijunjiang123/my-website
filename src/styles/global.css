@@ -150,9 +150,40 @@ html[lang="zh-CN"] .about-intro { max-width: 34rem; font-family: var(--sans-cjk)
 .life-swap { grid-area: 1 / 1; width: 100%; will-change: opacity, transform; }
 .life-art { width: 100%; position: relative; color: #f1f1ed; }
 .life-art svg { width: 100%; max-height: 580px; overflow: visible; }
+.skate-art { perspective: 900px; }
+.skate-trigger { position: absolute; inset: 0; display: block; width: 100%; height: 100%; appearance: none; border: 0; padding: 0; background: transparent; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.board-motion { display: block; width: 100%; height: 100%; transform-style: preserve-3d; will-change: transform; }
+.skate-trigger:focus-visible { outline: 0; }
+.skate-trigger:focus-visible .board { stroke: #fff; filter: drop-shadow(0 0 8px rgba(91,92,226,.72)); }
 .skate-art .trail { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .75; animation: trail-breathe 5.6s var(--ease-soft) infinite; }
 .skate-art .board { fill: none; stroke: currentColor; stroke-width: 2; transform-origin: center; animation: float-board 5.2s var(--ease-soft) infinite; }
 .skate-art .board circle { opacity: 1; animation: point-in .35s .22s var(--ease-out) both; }
+.kickflip-fx { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.kickflip-fx > b { position: absolute; left: 50%; top: 23%; z-index: 2; padding: .62rem .85rem .55rem; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(20,20,23,.48); box-shadow: 0 12px 36px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.15); color: #fff; font: 600 .58rem/1 var(--mono); letter-spacing: .13em; opacity: 0; transform: translate(-50%, 12px) scale(.86); backdrop-filter: blur(14px) saturate(135%); -webkit-backdrop-filter: blur(14px) saturate(135%); }
+.kickflip-speed i { position: absolute; left: 27%; top: 51%; width: 27%; height: 1px; border-radius: 999px; background: linear-gradient(90deg, transparent, rgba(91,92,226,.94), transparent); opacity: 0; transform: rotate(-15deg) scaleX(.3); transform-origin: right center; }
+.kickflip-speed i:nth-child(2) { left: 33%; top: 58%; width: 21%; transform: rotate(-10deg) scaleX(.3); }
+.kickflip-speed i:nth-child(3) { left: 39%; top: 44%; width: 17%; transform: rotate(-20deg) scaleX(.3); }
+.kickflip-ring { position: absolute; left: 50%; top: 61%; width: 18%; aspect-ratio: 2.8; border: 1px solid rgba(91,92,226,.95); border-radius: 50%; opacity: 0; transform: translate(-50%,-50%) scale(.22); }
+.kickflip-sparks { position: absolute; left: 50%; top: 61%; width: 1px; height: 1px; }
+.kickflip-sparks i { --spark-angle: 0deg; --spark-distance: 58px; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px rgba(91,92,226,.9); opacity: 0; transform: rotate(var(--spark-angle)) translateX(0) scale(.4); }
+.kickflip-sparks i:nth-child(2) { --spark-angle: 28deg; --spark-distance: 72px; }
+.kickflip-sparks i:nth-child(3) { --spark-angle: 57deg; --spark-distance: 52px; }
+.kickflip-sparks i:nth-child(4) { --spark-angle: 91deg; --spark-distance: 68px; }
+.kickflip-sparks i:nth-child(5) { --spark-angle: 126deg; --spark-distance: 46px; }
+.kickflip-sparks i:nth-child(6) { --spark-angle: 158deg; --spark-distance: 76px; }
+.kickflip-sparks i:nth-child(7) { --spark-angle: 188deg; --spark-distance: 58px; }
+.kickflip-sparks i:nth-child(8) { --spark-angle: 216deg; --spark-distance: 70px; }
+.kickflip-sparks i:nth-child(9) { --spark-angle: 248deg; --spark-distance: 50px; }
+.kickflip-sparks i:nth-child(10) { --spark-angle: 279deg; --spark-distance: 78px; }
+.kickflip-sparks i:nth-child(11) { --spark-angle: 311deg; --spark-distance: 54px; }
+.kickflip-sparks i:nth-child(12) { --spark-angle: 338deg; --spark-distance: 68px; }
+.skate-art[data-flipping="true"] .trail { animation: kickflip-trail 1.36s var(--ease-out) both; }
+.skate-art[data-flipping="true"] .kickflip-fx > b { animation: trick-label 1.36s var(--ease-out) both; }
+.skate-art[data-flipping="true"] .kickflip-speed i { animation: speed-line .6s .13s var(--ease-out) both; }
+.skate-art[data-flipping="true"] .kickflip-speed i:nth-child(2) { animation-delay: .2s; }
+.skate-art[data-flipping="true"] .kickflip-speed i:nth-child(3) { animation-delay: .27s; }
+.skate-art[data-flipping="true"] .kickflip-ring { animation: landing-ring .52s .82s var(--ease-out) both; }
+.skate-art[data-flipping="true"] .kickflip-sparks i { animation: spark-burst .5s .82s var(--ease-out) both; }
 .life-caption { position: absolute; left: 0; bottom: -.5rem; font-size: .6rem; color: #8a8b91; }
 .music-art { display: grid; grid-template-columns: minmax(10rem, 29%) minmax(0, 1fr); align-items: center; gap: clamp(2.5rem, 3.5vw, 4rem); min-height: 620px; }
 .vinyl { width: min(100%, 18rem); aspect-ratio: 1; display: grid; place-items: center; justify-self: center; }
@@ -201,7 +232,7 @@ html[lang="zh-CN"] .contact-main > p { max-width: none; font-family: var(--serif
 .contact-links a { position: relative; display:flex; gap:2rem; padding-block: .7rem; transform: translate3d(var(--magnetic-x, 0), var(--magnetic-y, 0), 0); transition: transform var(--motion-fast) var(--ease-out); }
 .contact-links span { color: var(--accent); transition: transform var(--motion-fast) var(--ease); }
 .contact-links a:hover span { transform: translate(4px,-4px); }
-.site-footer { border-top: 1px solid var(--line); min-height: 9rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2rem; font-size: .58rem; }
+.site-footer { border-top: 1px solid var(--line); min-height: 9rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2rem; font-size: .58rem; scroll-snap-align: end; scroll-snap-stop: always; }
 .site-footer > :last-child { justify-self:end; }
 
 .js [data-reveal] { opacity: .12; transform: translate3d(0,22px,0); transition: opacity 560ms var(--ease), transform 780ms var(--ease-out); transition-delay: var(--reveal-delay, 0ms); }
@@ -216,6 +247,11 @@ html[lang="zh-CN"] .contact-main > p { max-width: none; font-family: var(--serif
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes wave { to { transform: scaleY(.35); opacity: .45; } }
 @keyframes trail-breathe { 50% { opacity: 1; transform: translateY(-2px); } }
+@keyframes kickflip-trail { 0%, 100% { opacity: .75; transform: none; } 42% { opacity: 1; transform: translateY(-7px) scaleX(1.018); filter: drop-shadow(0 0 5px rgba(91,92,226,.42)); } }
+@keyframes speed-line { 0% { opacity: 0; } 22% { opacity: 1; } 100% { opacity: 0; transform: rotate(-15deg) scaleX(1); } }
+@keyframes landing-ring { 0% { opacity: .9; transform: translate(-50%,-50%) scale(.22); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(1.8); } }
+@keyframes spark-burst { 0% { opacity: 0; transform: rotate(var(--spark-angle)) translateX(0) scale(.4); } 18% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--spark-angle)) translateX(var(--spark-distance)) scale(1); } }
+@keyframes trick-label { 0%, 45%, 100% { opacity: 0; transform: translate(-50%, 12px) scale(.86); } 59%, 82% { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 @keyframes travel-path { to { stroke-dashoffset: -.2; } }
 @keyframes point-in { from { opacity: 1; transform: scale(.7); transform-origin: center; } to { opacity: 1; transform: scale(1); transform-origin: center; } }
 @keyframes coordinate-pulse { 50% { opacity: .45; transform: translate(-50%,-50%) scale(1.08); } }

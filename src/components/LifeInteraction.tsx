@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 'motion/react';
 import { Disc3, MapPin } from 'lucide-react';
 
 type LifeCopy = {
@@ -7,6 +7,8 @@ type LifeCopy = {
   readonly interestNotes: readonly string[];
   readonly skateCaption: string;
   readonly skateLabel: string;
+  readonly skateEasterLabel: string;
+  readonly skateTrickLabel: string;
   readonly musicKicker: string;
   readonly musicStatement: string;
   readonly musicEssay: string;
@@ -27,7 +29,81 @@ const dylanTracks = [
   'Tangled Up in Blue',
 ] as const;
 
-function Skate({ copy }: { copy: LifeCopy }) { return <div className="life-art skate-art"><svg viewBox="0 0 600 360" aria-label={copy.skateLabel}><path className="trail" pathLength="1" d="M38 282C190 186 334 329 565 198M98 310C252 232 377 331 588 240"/><g className="board"><path pathLength="1" d="M183 178c66 21 168 4 231-46 14-12 28-8 32 3 5 14-6 24-17 31-84 58-174 79-271 49-16-5-24-16-17-27 8-13 23-15 42-10z"/><circle cx="208" cy="225" r="10"/><circle cx="397" cy="184" r="10"/></g></svg><span className="life-caption mono">{copy.skateCaption}</span></div> }
+function Skate({ copy }: { copy: LifeCopy }) {
+  const reduce = useReducedMotion();
+  const controls = useAnimationControls();
+  const tapCount = useRef(0);
+  const tapReset = useRef<number | null>(null);
+  const flippingRef = useRef(false);
+  const [flipping, setFlipping] = useState(false);
+
+  useEffect(() => () => {
+    if (tapReset.current) window.clearTimeout(tapReset.current);
+    controls.stop();
+  }, [controls]);
+
+  const triggerFlip = async () => {
+    if (reduce || flippingRef.current) return;
+    flippingRef.current = true;
+    setFlipping(true);
+    await controls.start({
+      x: [0, 10, 34, 22, 7, 0],
+      y: [0, -20, -108, -82, -20, 0],
+      rotateX: [0, 0, 198, 374, 360, 360],
+      rotateY: [0, -4, 9, -5, 2, 0],
+      rotateZ: [0, -7, 12, -5, 2, 0],
+      scale: [1, 1.025, 1.07, 1.035, .985, 1],
+      transition: { duration: 1.36, times: [0, .14, .43, .68, .88, 1], ease: [.16, 1, .3, 1] },
+    });
+    controls.set({ x: 0, y: 0, rotateX: 0, rotateY: 0, rotateZ: 0, scale: 1 });
+    flippingRef.current = false;
+    setFlipping(false);
+  };
+
+  const handleActivate = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (reduce || flippingRef.current) return;
+    if (event.detail === 0) {
+      void triggerFlip();
+      return;
+    }
+    tapCount.current += 1;
+    if (tapReset.current) window.clearTimeout(tapReset.current);
+    if (tapCount.current >= 3) {
+      tapCount.current = 0;
+      if (tapReset.current) window.clearTimeout(tapReset.current);
+      void triggerFlip();
+      return;
+    }
+    void controls.start({
+      x: [0, 6, 0],
+      rotateZ: [0, -1.5, 0],
+      transition: { duration: .24, ease: [.16, 1, .3, 1] },
+    });
+    tapReset.current = window.setTimeout(() => { tapCount.current = 0; }, 1200);
+  };
+
+  return <div className="life-art skate-art" data-flipping={flipping ? 'true' : undefined}>
+    <svg viewBox="0 0 600 360" aria-hidden="true"><path className="trail" pathLength="1" d="M38 282C190 186 334 329 565 198M98 310C252 232 377 331 588 240"/></svg>
+    <motion.button
+      type="button"
+      className="skate-trigger"
+      aria-label={reduce ? copy.skateLabel : copy.skateEasterLabel}
+      tabIndex={reduce ? -1 : 0}
+      onClick={handleActivate}
+    >
+      <motion.span className="board-motion" animate={controls}>
+        <svg viewBox="0 0 600 360" aria-hidden="true"><g className="board"><path pathLength="1" d="M183 178c66 21 168 4 231-46 14-12 28-8 32 3 5 14-6 24-17 31-84 58-174 79-271 49-16-5-24-16-17-27 8-13 23-15 42-10z"/><circle cx="208" cy="225" r="10"/><circle cx="397" cy="184" r="10"/></g></svg>
+      </motion.span>
+    </motion.button>
+    <span className="kickflip-fx" aria-hidden="true">
+      <span className="kickflip-speed"><i/><i/><i/></span>
+      <span className="kickflip-ring"/>
+      <span className="kickflip-sparks">{Array.from({ length: 12 }, (_, index) => <i key={index}/>)}</span>
+      <b>{copy.skateTrickLabel}</b>
+    </span>
+    <span className="life-caption mono">{copy.skateCaption}</span>
+  </div>;
+}
 function Music({ copy }: { copy: LifeCopy }) { return <div className="life-art music-art">
   <div className="vinyl" aria-hidden="true"><Disc3 /></div>
   <div className="music-notes">
