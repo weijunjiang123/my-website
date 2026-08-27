@@ -1,0 +1,50 @@
+---
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/roboto-condensed/index.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+import MotionLayer from '../components/MotionLayer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'zh';
+}
+
+const { title, description, lang = 'en' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const englishUrl = new URL('/', Astro.site);
+const chineseUrl = new URL('/zh/', Astro.site);
+---
+
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content="#f7f7f5" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={englishUrl} />
+    <link rel="alternate" hreflang="zh-CN" href={chineseUrl} />
+    <link rel="alternate" hreflang="x-default" href={englishUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+    <meta property="og:image" content={new URL('/og.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/og.png', Astro.site)} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === 'zh' ? '跳到主要内容' : 'Skip to content'}</a>
+    <MotionLayer />
+    <slot />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </body>
+</html>

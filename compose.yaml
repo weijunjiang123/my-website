@@ -1,0 +1,18 @@
+name: weijun-personal-space
+
+services:
+  website:
+    image: ${WEBSITE_IMAGE:-weijun-personal-space:local}
+    restart: unless-stopped
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 10s
+

@@ -1,0 +1,11 @@
+---
+import { translations, type Locale } from '../data/translations';
+interface Props { lang?: Locale }
+const { lang = 'en' } = Astro.props;
+const t = translations[lang].footer;
+---
+<footer class="site-footer shell mono">
+  <span>{t.identity}</span>
+  <a href="#top">{t.back}</a>
+  <span>© 2026</span>
+</footer>

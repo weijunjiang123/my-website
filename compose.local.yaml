@@ -1,0 +1,9 @@
+services:
+  website:
+    image: weijun-personal-space:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
+

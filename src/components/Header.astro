@@ -1,0 +1,17 @@
+---
+import { translations, localePath, type Locale } from '../data/translations';
+interface Props { lang?: Locale }
+const { lang = 'en' } = Astro.props;
+const t = translations[lang];
+const alternate = lang === 'en' ? 'zh' : 'en';
+---
+<header class="site-header shell" aria-label={lang === 'zh' ? '主导航' : 'Primary navigation'}>
+  <a class="brand magnetic" href="#top" aria-label={lang === 'zh' ? 'Weijun，回到顶部' : 'Weijun, back to top'}>W.</a>
+  <nav aria-label={lang === 'zh' ? '页面章节' : 'Page sections'}>
+    <a href="#work">{t.nav.work}</a><span aria-hidden="true">/</span>
+    <a href="#life">{t.nav.life}</a><span aria-hidden="true">/</span>
+    <a href="#about">{t.nav.about}</a><span aria-hidden="true">/</span>
+    <a href="#contact">{t.nav.contact}</a><span aria-hidden="true">/</span>
+    <a class="language-link" href={localePath(alternate)} lang={alternate === 'zh' ? 'zh-CN' : 'en'} hreflang={alternate === 'zh' ? 'zh-CN' : 'en'}>{t.nav.language}</a>
+  </nav>
+</header>

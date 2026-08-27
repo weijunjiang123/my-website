@@ -1,0 +1,13 @@
+---
+import LifeInteraction from './LifeInteraction';
+import { translations, type Locale } from '../data/translations';
+interface Props { lang?: Locale }
+const { lang = 'en' } = Astro.props;
+const t = translations[lang].life;
+---
+<section class="life-section" id="life" aria-labelledby="life-title">
+  <div class="shell">
+    <div class="section-heading mono inverse" data-reveal><span>03</span><h2 id="life-title">{t.heading}</h2><span>{t.meta}</span></div>
+    <LifeInteraction copy={t} client:visible />
+  </div>
+</section>

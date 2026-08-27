@@ -1,0 +1,22 @@
+---
+import { translations, type Locale } from '../data/translations';
+interface Props { lang?: Locale }
+const { lang = 'en' } = Astro.props;
+const t = translations[lang].about;
+---
+<section class="section about-section shell" id="about" aria-labelledby="about-title">
+  <div class="section-heading mono" data-reveal><span>02</span><h2 id="about-title">{t.heading}</h2><span>{t.meta}</span></div>
+  <div class="about-grid">
+    <div class="about-copy-block" data-reveal>
+      <p class="about-copy">
+        {t.lead}
+        <span>{t.leadAccent}</span>
+      </p>
+      <p class="about-intro">{t.copy}</p>
+    </div>
+    <div class="about-notes mono" data-reveal>
+      <div><span>//</span><p>{t.fields}</p></div>
+      <div><span>//</span><p>{t.focus}<br/>{t.focusValue}</p></div>
+    </div>
+  </div>
+</section>

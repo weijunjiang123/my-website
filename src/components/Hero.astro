@@ -1,0 +1,18 @@
+---
+import { translations, type Locale } from '../data/translations';
+import HeroInteractive from './HeroInteractive';
+interface Props { lang?: Locale }
+const { lang = 'en' } = Astro.props;
+const t = translations[lang].hero;
+---
+<section class="hero shell" id="top" aria-labelledby="hero-title">
+  <div class="hero-visual"><HeroInteractive label={t.graphLabel} client:load /></div>
+  <div class="hero-title-mask" data-reveal><h1 id="hero-title">WEIJUN</h1></div>
+  <div class="hero-bottom" data-reveal>
+    <p class="hero-statement">
+      {lang === 'zh' ? <><span class="phrase">构建智能系统，</span><br/><span class="phrase">也认真对待那些</span><wbr/><span class="phrase">纯粹有趣的事。</span></> : t.statement}
+    </p>
+    <div class="hero-meta mono"><span>{t.role}</span><span>{t.location}</span></div>
+    <a class="explore-link mono" href="#work">{t.explore} <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
