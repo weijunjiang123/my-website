@@ -55,7 +55,7 @@ export default function LifeInteraction({ copy }: { copy: LifeCopy }){
       window.requestAnimationFrame(()=>stageRef.current?.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}));
     }
   };
-  return <div className="life-interactive">
+  return <div className="life-interactive" data-reveal>
     <div className="life-list" role="tablist" aria-label="Life interests">
       {items.map((item,i)=><button key={item.id} role="tab" aria-selected={active===item.id} aria-controls="life-art" onMouseEnter={()=>window.innerWidth>640&&setActive(item.id)} onFocus={()=>setActive(item.id)} onClick={()=>selectFromTap(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
     </div>

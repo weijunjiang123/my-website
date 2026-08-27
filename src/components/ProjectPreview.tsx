@@ -47,7 +47,7 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
     }
   };
   const activeProject = projects[active] ?? projects[0];
-  return <div className="work-interactive">
+  return <div className="work-interactive" data-reveal>
     <ul className="project-list">
       {projects.map((project, index) => <li key={project.id}><button type="button" className={`project-row ${active===index?'is-active':''}`} onMouseEnter={()=>window.innerWidth>640&&setActive(index)} onFocus={()=>setActive(index)} onClick={()=>selectFromTap(index)} aria-pressed={active===index}>
         <span className="project-index mono">{project.id}</span>

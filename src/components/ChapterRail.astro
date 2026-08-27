@@ -1,0 +1,32 @@
+---
+interface Props { lang?: 'en' | 'zh' }
+const { lang = 'en' } = Astro.props;
+const chapters = lang === 'zh'
+  ? [
+      { id: 'top', label: '首页' },
+      { id: 'work', label: '作品' },
+      { id: 'about', label: '关于' },
+      { id: 'life', label: '生活' },
+      { id: 'contact', label: '联系' },
+    ]
+  : [
+      { id: 'top', label: 'Intro' },
+      { id: 'work', label: 'Work' },
+      { id: 'about', label: 'About' },
+      { id: 'life', label: 'Life' },
+      { id: 'contact', label: 'Contact' },
+    ];
+---
+
+<nav class="chapter-rail" aria-label={lang === 'zh' ? '章节导航' : 'Chapter navigation'}>
+  {chapters.map((chapter, index) => (
+    <a
+      href={`#${chapter.id}`}
+      data-chapter-link={chapter.id}
+      aria-label={`${String(index + 1).padStart(2, '0')} — ${chapter.label}`}
+      title={chapter.label}
+    >
+      <span aria-hidden="true"></span>
+    </a>
+  ))}
+</nav>
