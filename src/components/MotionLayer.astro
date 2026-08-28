@@ -8,6 +8,7 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let sectionLinks: HTMLAnchorElement[] = [];
   let sections: HTMLElement[] = [];
+  const pageEntryTimers = new WeakMap<HTMLElement, number>();
   let scrollFrame = 0;
   let pointerFrame = 0;
   let anchorFrame = 0;
@@ -16,7 +17,6 @@
   let pointerX = pointerTargetX;
   let pointerY = pointerTargetY;
   let lastScrollY = window.scrollY;
-  let currentSectionIndex = -1;
 
   const updateScroll = () => {
     scrollFrame = 0;
@@ -71,19 +71,24 @@
 
   const setCurrentSection = (id: string) => {
     if (root.dataset.section === id) return;
+    const hadCurrentSection = root.dataset.section !== undefined;
     const nextIndex = sections.findIndex((section) => section.id === id);
-    const direction = currentSectionIndex < 0 ? 1 : nextIndex - currentSectionIndex;
     root.dataset.section = id;
-    currentSectionIndex = nextIndex;
     root.style.setProperty('--chapter-progress', String(nextIndex / Math.max(sections.length - 1, 1)));
     for (const section of sections) {
       const isCurrent = section.id === id;
       section.classList.toggle('is-current-section', isCurrent);
-      if (isCurrent && !reduceMotion.matches) {
-        section.style.setProperty('--section-entry-y', direction >= 0 ? '24px' : '-24px');
-        section.classList.remove('is-entering');
+      if (
+        isCurrent &&
+        hadCurrentSection &&
+        !reduceMotion.matches &&
+        !root.classList.contains('is-anchor-scrolling')
+      ) {
+        window.clearTimeout(pageEntryTimers.get(section));
+        section.classList.remove('is-page-entering');
         void section.offsetWidth;
-        section.classList.add('is-entering');
+        section.classList.add('is-page-entering');
+        pageEntryTimers.set(section, window.setTimeout(() => section.classList.remove('is-page-entering'), 560));
       }
     }
     for (const link of sectionLinks) {
@@ -157,7 +162,7 @@
       const group = element.closest('section') ?? document.body;
       const groupIndex = sectionCounts.get(group) ?? 0;
       sectionCounts.set(group, groupIndex + 1);
-      element.style.setProperty('--reveal-delay', `${Math.min(groupIndex, 2) * 45}ms`);
+      element.style.setProperty('--reveal-delay', `${Math.min(groupIndex, 2) * 35}ms`);
       revealObserver.observe(element);
     });
 
