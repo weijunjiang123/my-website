@@ -6,7 +6,7 @@ const { lang = 'en' } = Astro.props;
 const t = translations[lang].contact;
 ---
 <section class="section contact-section shell" id="contact" aria-labelledby="contact-title">
-  <div class="section-heading mono" data-reveal><span>04</span><h2 id="contact-title">{t.heading}</h2><span>{t.meta}</span></div>
+  <div class="section-heading mono" data-reveal><span>05</span><h2 id="contact-title">{t.heading}</h2><span>{t.meta}</span></div>
   <div class="contact-main">
     <p data-reveal>{lang === 'zh' ? <><span class="contact-phrase">欢迎有意思的交流，</span><br/><span class="contact-phrase">也欢迎新的可能。</span></> : t.statement}</p>
     <div class="coordinates mono" aria-label={t.locationLabel} data-reveal>

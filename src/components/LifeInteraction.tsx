@@ -105,13 +105,11 @@ function Skate({ copy }: { copy: LifeCopy }) {
   </div>;
 }
 function Music({ copy }: { copy: LifeCopy }) { return <div className="life-art music-art">
-  <div className="vinyl" aria-hidden="true"><Disc3 /></div>
+  <div className="music-mark" aria-hidden="true"><Disc3 /></div>
   <div className="music-notes">
     <span className="music-kicker mono">{copy.musicKicker}</span>
     <p>{copy.musicStatement}</p>
-    <small>{copy.musicEssay}</small>
-    <ol aria-label={copy.musicListLabel}>{dylanTracks.map((track,index)=><li key={track}><span className="mono">0{index+1}</span>{track}</li>)}</ol>
-    <div className="wave" aria-hidden="true">{Array.from({length:28},(_,i)=><i key={i} style={{height:`${8 + (Math.sin(i*.8)+1)*18}px`}} />)}</div>
+    <ol aria-label={copy.musicListLabel}>{dylanTracks.slice(0, 3).map((track,index)=><li key={track}><span className="mono">0{index+1}</span>{track}</li>)}</ol>
   </div>
 </div> }
 function Travel({ copy }: { copy: LifeCopy }) { return <div className="life-art travel-art"><svg viewBox="0 0 600 360" aria-label={copy.travelLabel}><path pathLength="1" d="M45 270C128 241 107 128 209 153s113 123 190 80 44-122 149-167"/><circle cx="45" cy="270" r="5"/><circle cx="209" cy="153" r="5"/><circle cx="399" cy="233" r="5"/><circle cx="548" cy="66" r="7"/></svg><MapPin aria-hidden="true"/><span className="life-caption mono">{copy.travelCaption}</span></div> }
