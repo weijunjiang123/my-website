@@ -10,6 +10,7 @@ const alternate = lang === 'en' ? 'zh' : 'en';
   <nav aria-label={lang === 'zh' ? '页面章节' : 'Page sections'}>
     <a href="#work">{t.nav.work}</a><span aria-hidden="true">/</span>
     <a href="#about">{t.nav.about}</a><span aria-hidden="true">/</span>
+    <a href="#stack">{t.nav.stack}</a><span aria-hidden="true">/</span>
     <a href="#life">{t.nav.life}</a><span aria-hidden="true">/</span>
     <a href="#contact">{t.nav.contact}</a><span aria-hidden="true">/</span>
     <a class="language-link" href={localePath(alternate)} lang={alternate === 'zh' ? 'zh-CN' : 'en'} hreflang={alternate === 'zh' ? 'zh-CN' : 'en'}>{t.nav.language}</a>

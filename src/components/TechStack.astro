@@ -1,0 +1,171 @@
+---
+import { translations, type Locale } from '../data/translations';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const t = translations[lang].stack;
+
+const groups = [
+  {
+    key: 'ai',
+    title: 'AI Engineering',
+    status: '03 Agent / 04 Retrieval',
+    description: lang === 'zh'
+      ? '构建 LLM 应用、智能体、检索与记忆系统。'
+      : 'Building LLM applications, agents, retrieval and memory systems.',
+    technologies: [
+      ['OpenAI', 'tool'], ['vLLM', 'tool'], ['Fine-tuning', 'concept'],
+      ['RAG', 'concept'], ['Agents', 'concept'], ['Memory', 'concept'],
+      ['LangGraph', 'tool'], ['Dify', 'tool'], ['Skills', 'concept'],
+      ['Sandbox', 'concept'],
+    ],
+  },
+  {
+    key: 'backend',
+    title: 'Backend',
+    status: '02 Services / 04 Memory',
+    description: lang === 'zh'
+      ? '为 AI 应用设计 API 与可靠的后端系统。'
+      : 'Designing APIs and backend systems for AI applications.',
+    technologies: [
+      ['Python', 'tool'], ['FastAPI', 'tool'], ['Celery', 'tool'],
+      ['Redis', 'tool'], ['SQLAlchemy', 'tool'],
+    ],
+  },
+  {
+    key: 'data',
+    title: 'Data & Retrieval',
+    status: '04 Retrieval / 05 Storage',
+    description: lang === 'zh'
+      ? '支撑检索、分析与知识系统的数据基础设施。'
+      : 'Data infrastructure for retrieval, analytics and knowledge systems.',
+    technologies: [
+      ['PostgreSQL', 'tool'], ['Elasticsearch', 'tool'], ['Doris', 'tool'],
+      ['Vector Search', 'concept'], ['Knowledge Graph', 'concept'],
+    ],
+  },
+  {
+    key: 'engineering',
+    title: 'Engineering',
+    status: '01 Interface / 06 Runtime',
+    description: lang === 'zh'
+      ? '用于构建、交付和运维产品的工程工具。'
+      : 'The infrastructure I use to build, ship and operate products.',
+    technologies: [
+      ['Docker', 'tool'], ['Linux', 'tool'], ['GitHub Actions', 'tool'],
+      ['Traefik', 'tool'], ['Grafana', 'tool'], ['React', 'tool'],
+    ],
+  },
+] as const;
+---
+
+<section id="stack" class="stack-section section shell" aria-labelledby="stack-heading">
+  <div class="section-heading mono" data-reveal>
+    <span>03</span><h2 id="stack-heading">{t.heading}</h2><span>{t.meta}</span>
+  </div>
+
+  <div class="stack-workbench">
+    <div class="stack-sidebar">
+      <div class="stack-intro" data-reveal>
+        <p>{t.statement}</p>
+        <span>{t.detail}</span>
+      </div>
+
+      <div class="stack-groups" aria-label={t.listLabel}>
+        {groups.map((group, groupIndex) => (
+          <button
+            type="button"
+            class:list={['stack-group', { 'is-active': groupIndex === 0 }]}
+            data-stack-group={group.key}
+            data-stack-status={group.status}
+            aria-pressed={groupIndex === 0 ? 'true' : 'false'}
+            aria-controls="stack-architecture"
+            data-reveal
+          >
+            <span class="stack-number mono">{String(groupIndex + 1).padStart(2, '0')}</span>
+            <span class="stack-group-copy">
+              <strong>{group.title}</strong>
+              <small>{group.description}</small>
+            </span>
+            <span class="stack-group-tech" aria-label={`${group.title} · ${t.listLabel}`}>
+              {group.technologies.map(([name, type]) => (
+                <span class:list={[`is-${type}`]}>{name}</span>
+              ))}
+            </span>
+            <span class="stack-group-arrow" aria-hidden="true">↗</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <aside id="stack-architecture" class="stack-architecture" aria-label={t.flowLabel} data-reveal>
+      <header class="stack-architecture-head mono">
+        <span>System architecture</span>
+        <span data-stack-status>03 Agent / 04 Retrieval</span>
+      </header>
+
+      <div class="stack-diagram" aria-hidden="true">
+        <span class="arch-band-label mono" style="--layer:0">01 / Interface</span>
+        <span class="arch-band-label mono" style="--layer:1">02 / Services</span>
+        <span class="arch-band-label mono" style="--layer:2">03 / Intelligence</span>
+        <span class="arch-band-label mono" style="--layer:3">04 / Knowledge</span>
+        <span class="arch-band-label mono" style="--layer:4">05 / Data</span>
+        <span class="arch-band-label mono" style="--layer:5">06 / Runtime</span>
+
+        <svg viewBox="0 0 600 600" preserveAspectRatio="none">
+          <path data-arch="engineering backend" d="M300 72V112H210V132M300 112H420V132" />
+          <path data-arch="backend ai" d="M210 168V232M420 168V198H210V232" />
+          <path data-arch="ai" d="M242 250H388M210 268V332" />
+          <path data-arch="ai data" d="M242 350H388M210 368V400H300V432" />
+          <path data-arch="data engineering" d="M300 468V500H210V532M300 500H420V532" />
+        </svg>
+
+        <span class="arch-node arch-interface" data-arch="engineering"><i>01</i><b>Product UI</b><small>React</small></span>
+        <span class="arch-node arch-api" data-arch="backend"><i>02A</i><b>API</b><small>Python · FastAPI · SQLAlchemy</small></span>
+        <span class="arch-node arch-queue" data-arch="backend"><i>02B</i><b>Queue / Cache</b><small>Celery · Redis</small></span>
+        <span class="arch-node arch-agent" data-arch="ai"><i>03A</i><b>Agent</b><small>LangGraph · Dify · Skills · Sandbox</small></span>
+        <span class="arch-node arch-model" data-arch="ai"><i>03B</i><b>Models</b><small>OpenAI · vLLM · Fine-tuning</small></span>
+        <span class="arch-node arch-retrieval" data-arch="ai data"><i>04A</i><b>Retrieval</b><small>RAG · Vector · Elasticsearch</small></span>
+        <span class="arch-node arch-memory" data-arch="ai data"><i>04B</i><b>Memory / Graph</b><small>Memory · Knowledge Graph</small></span>
+        <span class="arch-node arch-storage" data-arch="data"><i>05</i><b>Storage</b><small>PostgreSQL · Doris</small></span>
+        <span class="arch-node arch-runtime" data-arch="engineering"><i>06A</i><b>Runtime</b><small>Docker · Linux · Traefik</small></span>
+        <span class="arch-node arch-observe" data-arch="engineering"><i>06B</i><b>Deliver / Observe</b><small>GitHub Actions · Grafana</small></span>
+      </div>
+
+      <footer class="stack-architecture-foot mono">
+        <span>AI systems / working set</span><span>2026</span>
+      </footer>
+    </aside>
+  </div>
+</section>
+
+<script>
+  const stackSection = document.querySelector<HTMLElement>('.stack-section');
+  const stackGroups = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-stack-group]'));
+  const stackStatus = document.querySelector<HTMLElement>('[data-stack-status]:not(button)');
+  let stackPointerLockUntil = 0;
+
+  const setStackActive = (group: HTMLButtonElement) => {
+    const key = group.dataset.stackGroup ?? 'ai';
+    stackSection?.setAttribute('data-stack-active', key);
+    stackGroups.forEach((item) => {
+      const isActive = item === group;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-pressed', String(isActive));
+    });
+    if (stackStatus) stackStatus.textContent = group.dataset.stackStatus ?? '';
+  };
+
+  stackGroups.forEach((group) => {
+    group.addEventListener('pointerenter', () => {
+      if (performance.now() >= stackPointerLockUntil) setStackActive(group);
+    });
+    group.addEventListener('focus', () => setStackActive(group));
+    group.addEventListener('click', () => {
+      stackPointerLockUntil = performance.now() + 250;
+      setStackActive(group);
+    });
+  });
+
+  if (stackSection && !stackSection.dataset.stackActive) stackSection.dataset.stackActive = 'ai';
+</script>

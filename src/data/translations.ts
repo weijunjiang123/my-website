@@ -5,7 +5,7 @@ export const translations = {
     htmlLang: 'en',
     title: 'Weijun Jiang — AI Application Developer',
     description: 'Weijun Jiang is an AI application developer building practical intelligent systems with RAG and deep learning.',
-    nav: { work: 'Work', life: 'Life', about: 'About', contact: 'Contact', language: '中文' },
+    nav: { work: 'Work', life: 'Life', about: 'About', stack: 'Stack', contact: 'Contact', language: '中文' },
     hero: {
       statement: 'I build practical AI applications and keep learning in public.',
       role: 'AI Application Developer',
@@ -23,6 +23,14 @@ export const translations = {
       fields: 'Building — AI Applications',
       focus: 'Exploring —',
       focusValue: 'RAG / Deep Learning',
+    },
+    stack: {
+      heading: 'Tech Stack',
+      meta: 'Tools / Systems',
+      statement: 'I usually build with',
+      detail: 'A focused working set for taking AI systems from prototype to production.',
+      flowLabel: 'Interactive AI system architecture',
+      listLabel: 'Technology groups',
     },
     life: {
       heading: 'Outside the Screen',
@@ -55,7 +63,7 @@ export const translations = {
     htmlLang: 'zh-CN',
     title: 'Weijun Jiang — AI 应用开发者',
     description: 'Weijun Jiang 是一名 AI 应用开发者，正在用 RAG 与深度学习构建实用的智能系统。',
-    nav: { work: '作品', life: '生活', about: '关于', contact: '联系', language: 'EN' },
+    nav: { work: '作品', life: '生活', about: '关于', stack: '技术', contact: '联系', language: 'EN' },
     hero: {
       statement: '构建实用的 AI 应用，也持续公开学习。',
       role: 'AI 应用开发者',
@@ -73,6 +81,14 @@ export const translations = {
       fields: '正在构建 — AI 应用',
       focus: '持续探索 —',
       focusValue: 'RAG / 深度学习',
+    },
+    stack: {
+      heading: 'TECH STACK',
+      meta: '技术 / SYSTEMS',
+      statement: '我通常用这些技术构建',
+      detail: '一套从原型到生产，把 AI 系统真正做成产品的工作组合。',
+      flowLabel: '可交互的 AI 系统架构图',
+      listLabel: '技术分类',
     },
     life: {
       heading: 'OUTSIDE THE SCREEN',
