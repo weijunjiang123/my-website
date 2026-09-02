@@ -55,7 +55,7 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
         <span className="project-year mono">{project.year}</span>
       </button></li>)}
     </ul>
-    <div ref={previewRef} className="project-preview" aria-live="polite">
+    <div ref={previewRef} className="project-preview" aria-live="polite" data-interactive-surface>
       <AnimatePresence initial={false}>
         <motion.div
           key={activeProject.id}

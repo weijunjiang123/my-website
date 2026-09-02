@@ -133,7 +133,7 @@ export default function LifeInteraction({ copy }: { copy: LifeCopy }){
     <div className="life-list" role="tablist" aria-label="Life interests">
       {items.map((item,i)=><button key={item.id} role="tab" aria-selected={active===item.id} aria-controls="life-art" onMouseEnter={()=>window.innerWidth>640&&setActive(item.id)} onFocus={()=>setActive(item.id)} onClick={()=>selectFromTap(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
     </div>
-    <div ref={stageRef} className="life-stage" id="life-art" role="tabpanel">
+    <div ref={stageRef} className="life-stage" id="life-art" role="tabpanel" data-interactive-surface>
       <AnimatePresence initial={false}>
         <motion.div
           key={active}

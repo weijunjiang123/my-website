@@ -4,15 +4,83 @@ import HeroInteractive from './HeroInteractive';
 interface Props { lang?: Locale }
 const { lang = 'en' } = Astro.props;
 const t = translations[lang].hero;
+const heroLetters = 'WEIJUN'.split('');
+const heroWords = lang === 'en' ? t.statement.split(' ') : [];
 ---
 <section class="hero shell" id="top" aria-labelledby="hero-title">
   <div class="hero-visual"><HeroInteractive label={t.graphLabel} client:load /></div>
-  <div class="hero-title-mask" data-reveal><h1 id="hero-title">WEIJUN</h1></div>
+  <div class="hero-title-stage" data-reveal>
+    <h1 id="hero-title" aria-label="WEIJUN">{heroLetters.map((letter, index) => <span class="hero-letter" aria-hidden="true" style={`--letter-index:${index}`}>{letter}</span>)}</h1>
+  </div>
   <div class="hero-bottom" data-reveal>
     <p class="hero-statement">
-      {lang === 'zh' ? <><span class="phrase">构建智能系统，</span><br/><span class="phrase">也认真对待那些</span><wbr/><span class="phrase">纯粹有趣的事。</span></> : t.statement}
+      {lang === 'zh'
+        ? <><span class="phrase hero-word" style="--word-index:0">构建智能系统，</span><br/><span class="phrase hero-word" style="--word-index:1">也认真对待那些</span><wbr/><span class="phrase hero-word" style="--word-index:2">纯粹有趣的事。</span></>
+        : heroWords.map((word, index) => <><span class="hero-word" style={`--word-index:${index}`}>{word}</span>{index < heroWords.length - 1 ? ' ' : ''}</>)}
     </p>
     <div class="hero-meta mono"><span>{t.role}</span><span>{t.location}</span></div>
     <a class="explore-link mono" href="#work">{t.explore} <span aria-hidden="true">↓</span></a>
   </div>
 </section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('.hero');
+  const heroLetters = Array.from(document.querySelectorAll<HTMLElement>('.hero-letter'));
+  const heroVisual = document.querySelector<HTMLElement>('.hero-visual');
+  const reduceHeroMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canTrackHeroPointer = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 760px)').matches;
+  let heroPointerFrame = 0;
+  let heroScrollFrame = 0;
+  let heroPointerX = 0;
+  let heroPointerY = 0;
+
+  const resetHeroLetters = () => {
+    heroLetters.forEach((letter) => {
+      letter.style.setProperty('--letter-lift', '0px');
+      letter.style.setProperty('--letter-weight', '760');
+    });
+  };
+
+  const renderHeroPointer = () => {
+    heroPointerFrame = 0;
+    heroLetters.forEach((letter) => {
+      const rect = letter.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(heroPointerX - centerX, (heroPointerY - centerY) * .7);
+      const influence = Math.max(0, 1 - distance / Math.max(150, rect.height * .72));
+      const easedInfluence = influence * influence * (3 - 2 * influence);
+      letter.style.setProperty('--letter-lift', `${(-3.2 * easedInfluence).toFixed(2)}px`);
+      letter.style.setProperty('--letter-weight', `${Math.round(760 + 28 * easedInfluence)}`);
+    });
+  };
+
+  const onHeroPointerMove = (event: PointerEvent) => {
+    heroPointerX = event.clientX;
+    heroPointerY = event.clientY;
+    if (!heroPointerFrame) heroPointerFrame = requestAnimationFrame(renderHeroPointer);
+  };
+
+  const renderHeroScroll = () => {
+    heroScrollFrame = 0;
+    const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(window.innerHeight * .34, 1)));
+    heroLetters.forEach((letter, index) => {
+      letter.style.setProperty('--letter-exit-y', `${(-progress * (2.4 + index * .72)).toFixed(2)}px`);
+      letter.style.opacity = `${1 - progress * .16}`;
+    });
+    heroVisual?.style.setProperty('--hero-visual-drift', `${(progress * 13).toFixed(2)}px`);
+  };
+
+  const onHeroScroll = () => {
+    if (!heroScrollFrame) heroScrollFrame = requestAnimationFrame(renderHeroScroll);
+  };
+
+  if (hero && !reduceHeroMotion) {
+    if (canTrackHeroPointer) {
+      hero.addEventListener('pointermove', onHeroPointerMove, { passive: true });
+      hero.addEventListener('pointerleave', resetHeroLetters);
+    }
+    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    renderHeroScroll();
+  }
+</script>
