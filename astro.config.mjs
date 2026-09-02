@@ -4,10 +4,12 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://me.weijun.one',
+  site: 'https://weijun.one',
   output: 'static',
   devToolbar: { enabled: false },
   integrations: [react(), sitemap()],
   vite: { plugins: [tailwindcss()] },
-  build: { inlineStylesheets: 'auto' },
+  // Keep the first render styled even while a new container is replacing the
+  // previous release. Interactive chunks remain content-hashed and cacheable.
+  build: { inlineStylesheets: 'always' },
 });
