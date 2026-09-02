@@ -4,11 +4,15 @@ import { translations, type Locale } from '../data/translations';
 interface Props { lang?: Locale }
 const { lang = 'en' } = Astro.props;
 const t = translations[lang].contact;
+const contactWords = lang === 'en' ? t.statement.split(' ') : [];
 ---
 <section class="section contact-section shell" id="contact" aria-labelledby="contact-title">
   <div class="section-heading mono" data-reveal><span>05</span><h2 id="contact-title">{t.heading}</h2><span>{t.meta}</span></div>
   <div class="contact-main">
-    <p data-reveal>{lang === 'zh' ? <><span class="contact-phrase">欢迎有意思的交流，</span><br/><span class="contact-phrase">也欢迎新的可能。</span></> : t.statement}</p>
+    <p data-reveal>{lang === 'zh'
+      ? <><span class="contact-phrase" style="--word-index:0">欢迎有意思的交流，</span><br/><span class="contact-phrase" style="--word-index:1">也欢迎新的可能。</span></>
+      : contactWords.map((word, index) => <><span class="contact-word" style={`--word-index:${index}`}>{word}</span>{index < contactWords.length - 1 ? ' ' : ''}</>)
+    }</p>
     <div class="coordinates mono" aria-label={t.locationLabel} data-reveal>
       <span class="target" aria-hidden="true"><i></i></span>
       <strong>{lang === 'zh' ? '中国 · 南京' : 'Nanjing, China'}</strong><span>{profile.coordinates}</span>

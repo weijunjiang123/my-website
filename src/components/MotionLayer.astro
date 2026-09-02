@@ -69,27 +69,24 @@
     }
   }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 
+  const triggerSectionText = (section: HTMLElement) => {
+    if (reduceMotion.matches) return;
+      window.clearTimeout(pageEntryTimers.get(section));
+      section.classList.remove('is-page-entering');
+      void section.offsetWidth;
+      section.classList.add('is-page-entering');
+      pageEntryTimers.set(section, window.setTimeout(() => section.classList.remove('is-page-entering'), 1250));
+  };
+
   const setCurrentSection = (id: string) => {
     if (root.dataset.section === id) return;
-    const hadCurrentSection = root.dataset.section !== undefined;
     const nextIndex = sections.findIndex((section) => section.id === id);
     root.dataset.section = id;
     root.style.setProperty('--chapter-progress', String(nextIndex / Math.max(sections.length - 1, 1)));
     for (const section of sections) {
       const isCurrent = section.id === id;
       section.classList.toggle('is-current-section', isCurrent);
-      if (
-        isCurrent &&
-        hadCurrentSection &&
-        !reduceMotion.matches &&
-        !root.classList.contains('is-anchor-scrolling')
-      ) {
-        window.clearTimeout(pageEntryTimers.get(section));
-        section.classList.remove('is-page-entering');
-        void section.offsetWidth;
-        section.classList.add('is-page-entering');
-        pageEntryTimers.set(section, window.setTimeout(() => section.classList.remove('is-page-entering'), 560));
-      }
+      if (isCurrent) triggerSectionText(section);
     }
     for (const link of sectionLinks) {
       const isCurrent = link.hash === `#${id}`;
@@ -170,6 +167,25 @@
 
     if (!reduceMotion.matches && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       window.addEventListener('pointermove', onPointerMove, { passive: true });
+      document.querySelectorAll<HTMLElement>('[data-interactive-surface]').forEach((surface) => {
+        surface.addEventListener('pointermove', (event) => {
+          const rect = surface.getBoundingClientRect();
+          const x = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+          const y = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+          surface.style.setProperty('--surface-x', `${x * 100}%`);
+          surface.style.setProperty('--surface-y', `${y * 100}%`);
+          surface.style.setProperty('--surface-rx', `${(.5 - y) * 1.2}deg`);
+          surface.style.setProperty('--surface-ry', `${(x - .5) * 1.2}deg`);
+          surface.classList.add('is-surface-active');
+        }, { passive: true });
+        surface.addEventListener('pointerleave', () => {
+          surface.style.setProperty('--surface-x', '50%');
+          surface.style.setProperty('--surface-y', '50%');
+          surface.style.setProperty('--surface-rx', '0deg');
+          surface.style.setProperty('--surface-ry', '0deg');
+          surface.classList.remove('is-surface-active');
+        }, { passive: true });
+      });
       document.querySelectorAll<HTMLElement>('.magnetic, .site-header nav a, .contact-links a').forEach((element) => {
         element.addEventListener('pointermove', (event) => {
           const rect = element.getBoundingClientRect();

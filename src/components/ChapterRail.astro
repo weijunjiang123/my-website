@@ -25,6 +25,7 @@ const chapters = lang === 'zh'
     <a
       href={`#${chapter.id}`}
       data-chapter-link={chapter.id}
+      data-label={chapter.label}
       aria-label={`${String(index + 1).padStart(2, '0')} — ${chapter.label}`}
       title={chapter.label}
     >
