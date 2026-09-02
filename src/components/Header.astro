@@ -33,7 +33,25 @@ const alternate = lang === 'en' ? 'zh' : 'en';
 <script>
   const mobileMenu = document.querySelector<HTMLDetailsElement>('.mobile-menu');
   const mobileSummary = mobileMenu?.querySelector<HTMLElement>('summary');
-  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => mobileMenu.removeAttribute('open')));
+  const reduceMenuMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  mobileMenu?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (!target) return;
+
+      // Closing <details> synchronously can cancel the anchor's default scroll
+      // in iOS WebKit. Own the navigation so touch and keyboard activation use
+      // the same reliable path.
+      event.preventDefault();
+      mobileMenu.removeAttribute('open');
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: reduceMenuMotion.matches ? 'auto' : 'smooth', block: 'start' });
+        const updateHistory = window.location.hash === link.hash ? 'replaceState' : 'pushState';
+        window.history[updateHistory](null, '', link.hash);
+      });
+    });
+  });
   document.addEventListener('click', (event) => {
     if (mobileMenu?.open && event.target instanceof Node && !mobileMenu.contains(event.target)) mobileMenu.removeAttribute('open');
   });
