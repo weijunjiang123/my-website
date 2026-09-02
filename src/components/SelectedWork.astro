@@ -9,5 +9,5 @@ const projects = getProjects(lang);
 ---
 <section class="section work-section shell" id="work" aria-labelledby="work-title">
   <div class="section-heading mono" data-reveal><span>01</span><h2 id="work-title">{t.heading}</h2><span>{t.period}</span></div>
-  <ProjectPreview projects={projects} copy={t} client:visible />
+  <ProjectPreview projects={projects} copy={t} client:load />
 </section>

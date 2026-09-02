@@ -8,6 +8,6 @@ const t = translations[lang].life;
 <section class="life-section" id="life" aria-labelledby="life-title">
   <div class="shell">
     <div class="section-heading mono inverse" data-reveal><span>04</span><h2 id="life-title">{t.heading}</h2><span>{t.meta}</span></div>
-    <LifeInteraction copy={t} client:visible />
+    <LifeInteraction copy={t} client:load />
   </div>
 </section>

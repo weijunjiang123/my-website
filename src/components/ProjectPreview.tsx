@@ -33,7 +33,6 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
   const [projects, setProjects] = useState(initialProjects);
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
-  const previewRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
@@ -78,22 +77,16 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
     };
   }, []);
 
-  const selectFromTap = (index: number, shouldScroll: boolean) => {
-    setActive(index);
-    if (shouldScroll && window.matchMedia('(max-width: 1024px)').matches) {
-      window.requestAnimationFrame(() => previewRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }));
-    }
-  };
   const activeProject = projects[active] ?? projects[0];
   return <div className="work-interactive">
     <ul className="project-list">
-      {projects.map((project, index) => <li key={project.id}><button ref={(node) => { rowRefs.current[index] = node; }} data-project-index={index} type="button" className={`project-row ${active===index?'is-active':''}`} onMouseEnter={()=>window.innerWidth>1024&&setActive(index)} onFocus={()=>setActive(index)} onClick={(event)=>selectFromTap(index,event.detail>0)} aria-pressed={active===index}>
+      {projects.map((project, index) => <li key={project.id}><button ref={(node) => { rowRefs.current[index] = node; }} data-project-index={index} type="button" className={`project-row ${active===index?'is-active':''}`} onMouseEnter={()=>window.innerWidth>1024&&setActive(index)} onFocus={()=>setActive(index)} onClick={()=>setActive(index)} aria-pressed={active===index}>
         <span className="project-index mono">{project.id}</span>
         <span className="project-copy"><span className="project-title">{project.title} <ArrowUpRight aria-hidden="true" /></span><span className="project-category mono">{project.category}</span></span>
         <span className="project-year mono">{project.year}</span>
       </button></li>)}
     </ul>
-    <div ref={previewRef} className="project-preview" aria-live="polite">
+    <div className="project-preview" aria-live="polite">
       <AnimatePresence initial={false}>
         <motion.div
           key={activeProject.id}
