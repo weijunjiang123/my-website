@@ -13,7 +13,7 @@ export const translations = {
       explore: 'Scroll to explore',
       graphLabel: 'An interactive abstract knowledge graph',
     },
-    work: { heading: 'Open Source', period: 'Selected repositories · GitHub', publicLabel: 'Public repository', repositoryLabel: 'View repository', updatedLabel: 'Live GitHub data' },
+    work: { heading: 'Open Source', period: 'Selected repositories · GitHub', publicLabel: 'Public repository', repositoryLabel: 'View repository', updatedLabel: 'Live GitHub data', outcomeLabel: 'Outcome', technologyLabel: 'Built with' },
     about: {
       heading: 'About',
       meta: 'Who / Why',
@@ -35,6 +35,7 @@ export const translations = {
     life: {
       heading: 'Outside the Screen',
       meta: 'Life / Selected',
+      listLabel: 'Life interests',
       interests: ['SKATEBOARDING', 'MUSIC', 'TRAVEL'],
       interestNotes: ['', '', ''],
       skateCaption: 'PUSH / BALANCE / REPEAT',
@@ -71,7 +72,7 @@ export const translations = {
       explore: '向下探索',
       graphLabel: '一个可交互的抽象知识图谱',
     },
-    work: { heading: 'OPEN SOURCE', period: '精选开源项目 · GitHub', publicLabel: '公开仓库', repositoryLabel: '查看仓库', updatedLabel: 'GitHub 实时数据' },
+    work: { heading: '开源作品', period: '精选项目 · GitHub', publicLabel: '公开仓库', repositoryLabel: '查看仓库', updatedLabel: 'GitHub 实时数据', outcomeLabel: '成果', technologyLabel: '技术' },
     about: {
       heading: 'ABOUT',
       meta: '关于 / PROFILE',
@@ -93,6 +94,7 @@ export const translations = {
     life: {
       heading: 'OUTSIDE THE SCREEN',
       meta: '屏幕之外 / LIFE',
+      listLabel: '生活兴趣',
       interests: ['SKATEBOARDING', 'MUSIC', 'TRAVEL'],
       interestNotes: ['滑板', '音乐', '旅行'],
       skateCaption: '推动 / 平衡 / 再来一次',

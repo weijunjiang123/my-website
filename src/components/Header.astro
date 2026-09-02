@@ -7,7 +7,7 @@ const alternate = lang === 'en' ? 'zh' : 'en';
 ---
 <header class="site-header shell" aria-label={lang === 'zh' ? '主导航' : 'Primary navigation'}>
   <a class="brand magnetic" href="#top" aria-label={lang === 'zh' ? 'Weijun，回到顶部' : 'Weijun, back to top'}>W.</a>
-  <nav aria-label={lang === 'zh' ? '页面章节' : 'Page sections'}>
+  <nav class="desktop-nav" aria-label={lang === 'zh' ? '页面章节' : 'Page sections'}>
     <a href="#work">{t.nav.work}</a><span aria-hidden="true">/</span>
     <a href="#about">{t.nav.about}</a><span aria-hidden="true">/</span>
     <a href="#stack">{t.nav.stack}</a><span aria-hidden="true">/</span>
@@ -15,4 +15,32 @@ const alternate = lang === 'en' ? 'zh' : 'en';
     <a href="#contact">{t.nav.contact}</a><span aria-hidden="true">/</span>
     <a class="language-link" href={localePath(alternate)} lang={alternate === 'zh' ? 'zh-CN' : 'en'} hreflang={alternate === 'zh' ? 'zh-CN' : 'en'}>{t.nav.language}</a>
   </nav>
+  <div class="mobile-actions">
+    <details class="mobile-menu">
+      <summary>{lang === 'zh' ? '菜单' : 'Menu'}</summary>
+      <nav aria-label={lang === 'zh' ? '移动端页面章节' : 'Mobile page sections'}>
+        <a href="#work">{t.nav.work}</a>
+        <a href="#about">{t.nav.about}</a>
+        <a href="#stack">{t.nav.stack}</a>
+        <a href="#life">{t.nav.life}</a>
+        <a href="#contact">{t.nav.contact}</a>
+      </nav>
+    </details>
+    <a class="mobile-language language-link" href={localePath(alternate)} lang={alternate === 'zh' ? 'zh-CN' : 'en'} hreflang={alternate === 'zh' ? 'zh-CN' : 'en'}>{t.nav.language}</a>
+  </div>
 </header>
+
+<script>
+  const mobileMenu = document.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const mobileSummary = mobileMenu?.querySelector<HTMLElement>('summary');
+  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => mobileMenu.removeAttribute('open')));
+  document.addEventListener('click', (event) => {
+    if (mobileMenu?.open && event.target instanceof Node && !mobileMenu.contains(event.target)) mobileMenu.removeAttribute('open');
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && mobileMenu?.open) {
+      mobileMenu.removeAttribute('open');
+      mobileSummary?.focus();
+    }
+  });
+</script>

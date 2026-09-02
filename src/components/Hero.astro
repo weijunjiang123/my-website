@@ -63,12 +63,11 @@ const heroWords = lang === 'en' ? t.statement.split(' ') : [];
 
   const renderHeroScroll = () => {
     heroScrollFrame = 0;
-    const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(window.innerHeight * .34, 1)));
-    heroLetters.forEach((letter, index) => {
-      letter.style.setProperty('--letter-exit-y', `${(-progress * (2.4 + index * .72)).toFixed(2)}px`);
-      letter.style.opacity = `${1 - progress * .16}`;
-    });
-    heroVisual?.style.setProperty('--hero-visual-drift', `${(progress * 13).toFixed(2)}px`);
+    if (!hero) return;
+    const progress = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / Math.max(hero.offsetHeight * .72, 1)));
+    hero.style.setProperty('--hero-title-drift', `${(-progress * 14).toFixed(2)}px`);
+    hero.style.setProperty('--hero-copy-drift', `${(-progress * 6).toFixed(2)}px`);
+    heroVisual?.style.setProperty('--hero-visual-drift', `${(progress * 48).toFixed(2)}px`);
   };
 
   const onHeroScroll = () => {

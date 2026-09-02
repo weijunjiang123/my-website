@@ -4,7 +4,6 @@ import '@fontsource-variable/roboto-condensed/index.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '../styles/global.css';
 import MotionLayer from '../components/MotionLayer.astro';
-import ChapterRail from '../components/ChapterRail.astro';
 
 interface Props {
   title: string;
@@ -45,7 +44,6 @@ const chineseUrl = new URL('/zh/', Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">{lang === 'zh' ? '跳到主要内容' : 'Skip to content'}</a>
-    <ChapterRail lang={lang} />
     <MotionLayer />
     <slot />
   </body>

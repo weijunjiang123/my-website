@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 
 import { Disc3, MapPin } from 'lucide-react';
 
 type LifeCopy = {
+  readonly listLabel: string;
   readonly interests: readonly string[];
   readonly interestNotes: readonly string[];
   readonly skateCaption: string;
@@ -118,22 +119,43 @@ export default function LifeInteraction({ copy }: { copy: LifeCopy }){
   const [active,setActive]=useState('skate');
   const reduce=useReducedMotion();
   const stageRef=useRef<HTMLDivElement>(null);
+  const tabRefs=useRef<Array<HTMLButtonElement | null>>([]);
   const items = [
     { id:'skate', label:copy.interests[0], note:copy.interestNotes[0] },
     { id:'music', label:copy.interests[1], note:copy.interestNotes[1] },
     { id:'travel', label:copy.interests[2], note:copy.interestNotes[2] },
   ];
-  const selectFromTap=(id:string)=>{
+  const selectFromTap=(id:string,shouldScroll:boolean)=>{
     setActive(id);
-    if(window.matchMedia('(max-width: 640px)').matches){
+    if(shouldScroll&&window.matchMedia('(max-width: 640px)').matches){
       window.requestAnimationFrame(()=>stageRef.current?.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}));
     }
   };
-  return <div className="life-interactive" data-reveal>
-    <div className="life-list" role="tablist" aria-label="Life interests">
-      {items.map((item,i)=><button key={item.id} role="tab" aria-selected={active===item.id} aria-controls="life-art" onMouseEnter={()=>window.innerWidth>640&&setActive(item.id)} onFocus={()=>setActive(item.id)} onClick={()=>selectFromTap(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
+  const moveTab=(index:number)=>{
+    const next=(index+items.length)%items.length;
+    setActive(items[next].id);
+    tabRefs.current[next]?.focus();
+  };
+  const handleTabKey=(event:React.KeyboardEvent<HTMLButtonElement>,index:number)=>{
+    if(event.key==='ArrowRight'||event.key==='ArrowDown'){
+      event.preventDefault();
+      moveTab(index+1);
+    }else if(event.key==='ArrowLeft'||event.key==='ArrowUp'){
+      event.preventDefault();
+      moveTab(index-1);
+    }else if(event.key==='Home'){
+      event.preventDefault();
+      moveTab(0);
+    }else if(event.key==='End'){
+      event.preventDefault();
+      moveTab(items.length-1);
+    }
+  };
+  return <div className="life-interactive">
+    <div className="life-list" role="tablist" aria-label={copy.listLabel}>
+      {items.map((item,i)=><button ref={(node)=>{tabRefs.current[i]=node;}} id={`life-tab-${item.id}`} key={item.id} role="tab" tabIndex={active===item.id?0:-1} aria-selected={active===item.id} aria-controls="life-art" onMouseEnter={()=>window.innerWidth>1024&&setActive(item.id)} onFocus={()=>setActive(item.id)} onKeyDown={(event)=>handleTabKey(event,i)} onClick={(event)=>selectFromTap(item.id,event.detail>0)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
     </div>
-    <div ref={stageRef} className="life-stage" id="life-art" role="tabpanel" data-interactive-surface>
+    <div ref={stageRef} className="life-stage" id="life-art" role="tabpanel" aria-labelledby={`life-tab-${active}`} tabIndex={0}>
       <AnimatePresence initial={false}>
         <motion.div
           key={active}

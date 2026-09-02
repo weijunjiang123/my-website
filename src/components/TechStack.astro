@@ -71,7 +71,7 @@ const groups = [
         <span>{t.detail}</span>
       </div>
 
-      <div class="stack-groups" aria-label={t.listLabel}>
+      <div class="stack-groups" role="group" aria-label={t.listLabel}>
         {groups.map((group, groupIndex) => (
           <button
             type="button"
@@ -98,10 +98,10 @@ const groups = [
       </div>
     </div>
 
-    <aside id="stack-architecture" class="stack-architecture" aria-label={t.flowLabel} data-reveal data-interactive-surface>
+    <aside id="stack-architecture" class="stack-architecture" aria-label={t.flowLabel} data-reveal data-scroll-parallax="4">
       <header class="stack-architecture-head mono">
         <span>System architecture</span>
-        <span data-stack-status>03 Agent / 04 Retrieval</span>
+        <span data-stack-status aria-live="polite" aria-atomic="true">03 Agent / 04 Retrieval</span>
       </header>
 
       <div class="stack-diagram" aria-hidden="true">
