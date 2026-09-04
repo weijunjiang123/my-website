@@ -943,9 +943,19 @@ main > section { min-height: auto; scroll-margin-top: 0; scroll-snap-align: none
   .site-footer { min-height: 9rem; }
 }
 
+.preview-swap,
+.life-swap { opacity: 0; visibility: hidden; pointer-events: none; transform: translate3d(0,.55rem,0); transition: opacity .32s ease, transform .42s var(--ease-out), visibility 0s linear .42s; }
+.preview-swap.is-active,
+.life-swap.is-active { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; }
+
+@media (max-width: 640px) {
+  .preview-swap:not(.is-active) { position: absolute; inset: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js .hero-letter { animation: none; }
   .hero-letter, .magnetic { transform: none !important; }
+  .preview-swap, .life-swap { transform: none !important; transition: none !important; }
   .repository-visual, .stack-diagram, .hero-title-stage, .hero-bottom, .hero-visual { transform: none !important; }
   .js [data-reveal], .js [data-reveal].is-visible { opacity: 1 !important; transform: none !important; filter: none !important; }
 }

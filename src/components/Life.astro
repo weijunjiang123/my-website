@@ -11,3 +11,64 @@ const t = translations[lang].life;
     <LifeInteraction copy={t} client:load />
   </div>
 </section>
+
+<script is:inline>
+  (() => {
+    const section = document.getElementById('life');
+    if (!section || section.dataset.nativeInteractions === 'ready') return;
+    section.dataset.nativeInteractions = 'ready';
+    const island = section.querySelector('astro-island');
+
+    const activate = (button) => {
+      const id = button.dataset.lifeId;
+      if (!id) return;
+      section.querySelectorAll('[data-life-id]').forEach((tab) => {
+        const selected = tab === button;
+        tab.classList.toggle('is-active', selected);
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      section.querySelectorAll('[data-life-panel]').forEach((panel) => {
+        const selected = panel.dataset.lifePanel === id;
+        panel.classList.toggle('is-active', selected);
+        panel.setAttribute('aria-hidden', String(!selected));
+        panel.inert = !selected;
+      });
+      const stage = section.querySelector('.life-stage');
+      stage?.setAttribute('aria-labelledby', `life-tab-${id}`);
+      if (island) {
+        island.dataset.activeLife = id;
+        island.dispatchEvent(new CustomEvent('portfolio:life-select', { detail: { id } }));
+      }
+    };
+
+    section.addEventListener('pointerover', (event) => {
+      if (event.pointerType === 'touch') return;
+      const button = event.target.closest?.('[data-life-id]');
+      if (!button || !section.contains(button) || button.contains(event.relatedTarget)) return;
+      activate(button);
+    });
+    section.addEventListener('click', (event) => {
+      const button = event.target.closest?.('[data-life-id]');
+      if (button && section.contains(button)) activate(button);
+    });
+    section.addEventListener('focusin', (event) => {
+      const button = event.target.closest?.('[data-life-id]');
+      if (button && section.contains(button)) activate(button);
+    });
+    section.addEventListener('keydown', (event) => {
+      if (!island?.hasAttribute('ssr')) return;
+      const button = event.target.closest?.('[data-life-id]');
+      if (!button) return;
+      const tabs = Array.from(section.querySelectorAll('[data-life-id]'));
+      const current = tabs.indexOf(button);
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 :
+        event.key === 'ArrowRight' || event.key === 'ArrowDown' ? (current + 1) % tabs.length :
+        event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? (current - 1 + tabs.length) % tabs.length : -1;
+      if (next < 0) return;
+      event.preventDefault();
+      activate(tabs[next]);
+      tabs[next].focus();
+    });
+  })();
+</script>
