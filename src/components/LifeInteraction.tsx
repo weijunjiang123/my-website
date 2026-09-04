@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 'motion/react';
+import { motion, useAnimationControls, useReducedMotion } from 'motion/react';
 import { Disc3, MapPin } from 'lucide-react';
 
 type LifeCopy = {
@@ -117,13 +117,23 @@ function Travel({ copy }: { copy: LifeCopy }) { return <div className="life-art 
 
 export default function LifeInteraction({ copy }: { copy: LifeCopy }){
   const [active,setActive]=useState('skate');
-  const reduce=useReducedMotion();
   const tabRefs=useRef<Array<HTMLButtonElement | null>>([]);
   const items = [
     { id:'skate', label:copy.interests[0], note:copy.interestNotes[0] },
     { id:'music', label:copy.interests[1], note:copy.interestNotes[1] },
     { id:'travel', label:copy.interests[2], note:copy.interestNotes[2] },
   ];
+  useEffect(()=>{
+    const island=document.querySelector<HTMLElement>('#life astro-island');
+    const syncNativeSelection=(event:Event)=>{
+      const id=(event as CustomEvent<{id?:string}>).detail?.id;
+      if(items.some((item)=>item.id===id)) setActive(id as string);
+    };
+    island?.addEventListener('portfolio:life-select',syncNativeSelection);
+    const pendingId=island?.dataset.activeLife;
+    if(pendingId&&items.some((item)=>item.id===pendingId)) setActive(pendingId);
+    return()=>island?.removeEventListener('portfolio:life-select',syncNativeSelection);
+  },[]);
   const moveTab=(index:number)=>{
     const next=(index+items.length)%items.length;
     setActive(items[next].id);
@@ -146,20 +156,18 @@ export default function LifeInteraction({ copy }: { copy: LifeCopy }){
   };
   return <div className="life-interactive">
     <div className="life-list" role="tablist" aria-label={copy.listLabel}>
-      {items.map((item,i)=><button ref={(node)=>{tabRefs.current[i]=node;}} id={`life-tab-${item.id}`} key={item.id} role="tab" tabIndex={active===item.id?0:-1} aria-selected={active===item.id} aria-controls="life-art" onPointerEnter={(event)=>event.pointerType!=='touch'&&setActive(item.id)} onFocus={()=>setActive(item.id)} onKeyDown={(event)=>handleTabKey(event,i)} onClick={()=>setActive(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
+      {items.map((item,i)=><button ref={(node)=>{tabRefs.current[i]=node;}} id={`life-tab-${item.id}`} data-life-id={item.id} key={item.id} role="tab" tabIndex={active===item.id?0:-1} aria-selected={active===item.id} aria-controls="life-art" onPointerEnter={(event)=>event.pointerType!=='touch'&&setActive(item.id)} onFocus={()=>setActive(item.id)} onKeyDown={(event)=>handleTabKey(event,i)} onClick={()=>setActive(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
     </div>
     <div className="life-stage" id="life-art" role="tabpanel" aria-labelledby={`life-tab-${active}`} tabIndex={0}>
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={active}
-          className="life-swap"
-          initial={reduce ? false : { opacity: 0, x: 10, y: 4 }}
-          animate={{ opacity: 1, x: 0, y: 0 }}
-          exit={reduce ? { opacity: 1 } : { opacity: 0, x: -7, y: -2 }}
-          transition={{ duration: reduce ? 0 : .42, ease: [.16, 1, .3, 1] }}
-        >
-          {active==='skate'?<Skate copy={copy}/>:active==='music'?<Music copy={copy}/>:<Travel copy={copy}/>}</motion.div>
-      </AnimatePresence>
+      {items.map((item)=><div
+        key={item.id}
+        className={`life-swap ${active===item.id?'is-active':''}`}
+        data-life-panel={item.id}
+        aria-hidden={active!==item.id}
+        inert={active!==item.id}
+      >
+        {item.id==='skate'?<Skate copy={copy}/>:item.id==='music'?<Music copy={copy}/>:<Travel copy={copy}/>}
+      </div>)}
     </div>
   </div>
 }

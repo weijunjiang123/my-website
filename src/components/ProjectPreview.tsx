@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowUpRight, GitFork, Star } from 'lucide-react';
 import { githubUsername, type Project } from '../data/projects';
 
@@ -32,7 +31,6 @@ function RepositoryVisual({ project, copy }: { project: Project; copy: WorkCopy 
 export default function ProjectPreview({ projects: initialProjects, copy }: { projects: Project[]; copy: WorkCopy }) {
   const [projects, setProjects] = useState(initialProjects);
   const [active, setActive] = useState(0);
-  const reduce = useReducedMotion();
   const rowRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
@@ -43,6 +41,18 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
       .catch(() => undefined);
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const island = document.querySelector<HTMLElement>('#work astro-island');
+    const syncNativeSelection = (event: Event) => {
+      const index = Number((event as CustomEvent<{ index?: number }>).detail?.index);
+      if (Number.isInteger(index) && index >= 0 && index < initialProjects.length) setActive(index);
+    };
+    island?.addEventListener('portfolio:project-select', syncNativeSelection);
+    const pendingIndex = Number(island?.dataset.activeProject);
+    if (Number.isInteger(pendingIndex) && pendingIndex >= 0 && pendingIndex < initialProjects.length) setActive(pendingIndex);
+    return () => island?.removeEventListener('portfolio:project-select', syncNativeSelection);
+  }, [initialProjects.length]);
 
   useEffect(() => {
     const desktop = window.matchMedia('(min-width: 1025px)');
@@ -77,7 +87,6 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
     };
   }, []);
 
-  const activeProject = projects[active] ?? projects[0];
   return <div className="work-interactive">
     <ul className="project-list">
       {projects.map((project, index) => <li key={project.id}><button ref={(node) => { rowRefs.current[index] = node; }} data-project-index={index} type="button" className={`project-row ${active===index?'is-active':''}`} onPointerEnter={(event)=>event.pointerType!=='touch'&&setActive(index)} onFocus={()=>setActive(index)} onClick={()=>setActive(index)} aria-pressed={active===index}>
@@ -87,20 +96,17 @@ export default function ProjectPreview({ projects: initialProjects, copy }: { pr
       </button></li>)}
     </ul>
     <div className="project-preview" aria-live="polite">
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={activeProject.id}
-          className="preview-inner preview-swap"
-          initial={reduce ? false : { opacity: 0, y: 9 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reduce ? { opacity: 1 } : { opacity: 0, y: -6 }}
-          transition={{ duration: reduce ? 0 : .4, ease: [.16, 1, .3, 1] }}
-        >
-          <div className="preview-head mono"><span>{copy.updatedLabel}</span><span>{activeProject.id} / {String(projects.length).padStart(2, '0')}</span></div>
-          <RepositoryVisual project={activeProject} copy={copy} />
-          <div className="preview-foot mono"><span>{activeProject.category}</span><a href={activeProject.url} target="_blank" rel="noreferrer">{copy.repositoryLabel} <ArrowUpRight aria-hidden="true" /></a></div>
-        </motion.div>
-      </AnimatePresence>
+      {projects.map((project, index) => <div
+        key={project.id}
+        className={`preview-inner preview-swap ${active===index?'is-active':''}`}
+        data-project-panel={index}
+        aria-hidden={active!==index}
+        inert={active!==index}
+      >
+        <div className="preview-head mono"><span>{copy.updatedLabel}</span><span>{project.id} / {String(projects.length).padStart(2, '0')}</span></div>
+        <RepositoryVisual project={project} copy={copy} />
+        <div className="preview-foot mono"><span>{project.category}</span><a href={project.url} target="_blank" rel="noreferrer">{copy.repositoryLabel} <ArrowUpRight aria-hidden="true" /></a></div>
+      </div>)}
     </div>
   </div>;
 }

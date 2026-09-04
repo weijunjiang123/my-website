@@ -11,3 +11,47 @@ const projects = getProjects(lang);
   <div class="section-heading mono" data-reveal><span>01</span><h2 id="work-title">{t.heading}</h2><span>{t.period}</span></div>
   <ProjectPreview projects={projects} copy={t} client:load />
 </section>
+
+<script is:inline>
+  (() => {
+    const section = document.getElementById('work');
+    if (!section || section.dataset.nativeInteractions === 'ready') return;
+    section.dataset.nativeInteractions = 'ready';
+    const island = section.querySelector('astro-island');
+
+    const activate = (button) => {
+      const index = button.dataset.projectIndex;
+      if (index == null) return;
+      section.querySelectorAll('[data-project-index]').forEach((item) => {
+        const selected = item === button;
+        item.classList.toggle('is-active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+      section.querySelectorAll('[data-project-panel]').forEach((panel) => {
+        const selected = panel.dataset.projectPanel === index;
+        panel.classList.toggle('is-active', selected);
+        panel.setAttribute('aria-hidden', String(!selected));
+        panel.inert = !selected;
+      });
+      if (island) {
+        island.dataset.activeProject = index;
+        island.dispatchEvent(new CustomEvent('portfolio:project-select', { detail: { index: Number(index) } }));
+      }
+    };
+
+    section.addEventListener('pointerover', (event) => {
+      if (event.pointerType === 'touch') return;
+      const button = event.target.closest?.('[data-project-index]');
+      if (!button || !section.contains(button) || button.contains(event.relatedTarget)) return;
+      activate(button);
+    });
+    section.addEventListener('click', (event) => {
+      const button = event.target.closest?.('[data-project-index]');
+      if (button && section.contains(button)) activate(button);
+    });
+    section.addEventListener('focusin', (event) => {
+      const button = event.target.closest?.('[data-project-index]');
+      if (button && section.contains(button)) activate(button);
+    });
+  })();
+</script>
