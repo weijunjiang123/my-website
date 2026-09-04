@@ -146,7 +146,7 @@ export default function LifeInteraction({ copy }: { copy: LifeCopy }){
   };
   return <div className="life-interactive">
     <div className="life-list" role="tablist" aria-label={copy.listLabel}>
-      {items.map((item,i)=><button ref={(node)=>{tabRefs.current[i]=node;}} id={`life-tab-${item.id}`} key={item.id} role="tab" tabIndex={active===item.id?0:-1} aria-selected={active===item.id} aria-controls="life-art" onMouseEnter={()=>window.innerWidth>1024&&setActive(item.id)} onFocus={()=>setActive(item.id)} onKeyDown={(event)=>handleTabKey(event,i)} onClick={()=>setActive(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
+      {items.map((item,i)=><button ref={(node)=>{tabRefs.current[i]=node;}} id={`life-tab-${item.id}`} key={item.id} role="tab" tabIndex={active===item.id?0:-1} aria-selected={active===item.id} aria-controls="life-art" onPointerEnter={(event)=>event.pointerType!=='touch'&&setActive(item.id)} onFocus={()=>setActive(item.id)} onKeyDown={(event)=>handleTabKey(event,i)} onClick={()=>setActive(item.id)} className={active===item.id?'is-active':''}><span className="mono">0{i+1}</span><b className="life-label">{item.label}</b>{item.note ? <em>{item.note}</em> : null}</button>)}
     </div>
     <div className="life-stage" id="life-art" role="tabpanel" aria-labelledby={`life-tab-${active}`} tabIndex={0}>
       <AnimatePresence initial={false}>
